@@ -15,9 +15,9 @@ function App(){
     var QB = require('../node_modules/quickblox/quickblox');
 
     var CREDENTIALS = {
-      'appId': "84745",
-      'authKey': 'LdXtzcfrYbBjeAe',
-      'authSecret': 'dBGXnpyZWmqzTWf'
+      'appId': "",
+      'authKey': '',
+      'authSecret': ''
     };
 
     QB.init(CREDENTIALS.appId, CREDENTIALS.authKey, CREDENTIALS.authSecret);
