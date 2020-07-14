@@ -9,20 +9,25 @@ function onDisconnectedListener() {
 
 
 function App(){
+    
 
     var session;  
+
+    var token = "";
 
     var QB = require('../node_modules/quickblox/quickblox');
 
     var CREDENTIALS = {
-      'appId': "",
-      'authKey': '',
-      'authSecret': ''
+      'appId': "84745",
+      'authKey': 'LdXtzcfrYbBjeAe',
+      'authSecret': 'dBGXnpyZWmqzTWf'
     };
 
     QB.init(CREDENTIALS.appId, CREDENTIALS.authKey, CREDENTIALS.authSecret);
 
-    var params = {login: 'sajal',password: 'quickblox' };  
+    const sessioncreater = () => {
+
+      var params = {login: 'sajal',password: 'quickblox' };  
 
     var token = ""
 
@@ -41,11 +46,17 @@ function App(){
       }
     });
 
+    }
+   
     
   QB.webrtc.onCallListener = function(currentsession, extension) {
+
+
       console.log("iiiiiiiiiiitttttttts exeeeeeeeeectured")
       console.log(currentsession)
       console.log(extension)
+
+      session = currentsession
 
       var mediaParams = {
         audio: true,
@@ -57,6 +68,7 @@ function App(){
         elemId: "localVideo"
       };
       
+
       currentsession.getUserMedia(mediaParams, function(err, stream) {
         if (err) {
           console.log("error in video call")
@@ -67,7 +79,7 @@ function App(){
         }
       });
 
-      currentsession.accept(extension);
+     
   
   };  
 
@@ -204,9 +216,40 @@ function App(){
   }
 
   const acceptvideochatwithlajas = () => {
-    
-    
+
+    session.accept({});
+     
   }
+
+  const rejectvideochatwithlajas = () => {
+
+    session.reject({});
+
+  }
+
+  const stopvideochatwithlajas = () => {
+
+    var extension = {};
+    session.stop(extension);
+
+  }
+
+  QB.webrtc.onRemoteStreamListener = function(session, userID, remoteStream) {
+    // attach the remote stream to DOM element
+    session.attachMediaStream("opponentVideo", remoteStream);
+  };
+
+  QB.webrtc.onStopCallListener = function(session, userId, extension) {
+    console.log("lajas has ended the call you idiot");
+  };
+
+  QB.webrtc.onRejectCallListener = function(session, userId, extension) {
+    console.log("lajas has rejected the call");
+  };
+
+  QB.webrtc.onUserNotAnswerListener = function(session, userId) {
+    console.log("Pick up the damn phone call mister");
+  };
 
 
   
@@ -214,6 +257,7 @@ function App(){
   return (
     <div>
     Sajal
+    <button onClick={sessioncreater}>Create arbitary session</button>
     <button onClick = {createus}>clickus</button>
     <button onClick = {destroyus}>deleteus</button>
     <button onClick = {getusers}>Getuser</button>
@@ -222,8 +266,11 @@ function App(){
     <button onClick = {videoconnect}>VideoConnect</button>
     <button onClick = {videochatwithlajas}>VideoChatwithlajas</button>
     <button onClick = {acceptvideochatwithlajas}>AcceptVideoChatwithlajas</button>
+    <button onClick={rejectvideochatwithlajas}>Rejectvideochatwithlajas</button>
+    <button onClick={stopvideochatwithlajas}>Stopthecallwithlajas</button>
     <div>
         <video id="localVideo" autoPlay playsInline></video>
+        <video id="opponentVideo" autoPlay playsInline></video>
     </div>
     </div>
   );
